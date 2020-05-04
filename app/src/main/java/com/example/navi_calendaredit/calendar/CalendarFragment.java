@@ -182,7 +182,6 @@ public class CalendarFragment extends Fragment {
         }
 
         textAdapter.notifyDataSetChanged();
-//      ((MainActivity) MainActivity.mContext).show();
     }
 
     @Override

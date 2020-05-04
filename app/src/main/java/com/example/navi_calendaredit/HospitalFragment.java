@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,23 +25,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-public class HospitalFragment extends Fragment{
+public class HospitalFragment extends Fragment {
 
     EditText edit;
     TextView text;
+    Button btn;
 
     String Key = "NO2EbE%2Bu5KtWhuLp1rQALIAtWWnRDgj9mCuelgBAxRS%2Frxi12vyAMLBp%2F3KEanPiRfbO3hwggbbpZ%2B0XtKIolQ%3D%3D";
     String data;
 
-    public HospitalFragment(){}
+    public HospitalFragment() {
+    }
 
-    public void onCreate (Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
+
     @Nullable
     @Override
-
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hospital, container, false);
 
@@ -48,12 +51,37 @@ public class HospitalFragment extends Fragment{
 
         edit = (EditText) view.findViewById(R.id.edit);
         text = (TextView) view.findViewById(R.id.text);
+        btn = (Button) view.findViewById(R.id.button);
+
+        btn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.button:
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                data = getXmlData();
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        text.setText(data);
+                                    }
+                                });
+                            }
+                        }).start();
+                        break;
+                }
+            }
+        });
 
         return view;
     }
-
+/*
     public void mOnClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button:
 
                 new Thread(new Runnable() {
@@ -71,23 +99,23 @@ public class HospitalFragment extends Fragment{
                 }).start();
                 break;
         }
-    }
+    }   */
 
-    String getXmlData(){
+    String getXmlData() {
         StringBuffer buffer = new StringBuffer();
 
         String str = edit.getText().toString();
         String location = null;
         try {
-            location = URLEncoder.encode(str,"UTF-8");
+            location = URLEncoder.encode(str, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
         String queryUrl = "http://apis.data.go.kr/6260000/MedicInstitService/MedicalInstitInfo?"
-                + "serviceKey="+ Key
-                +"&pageNo=1&numOfRows=5"
-                +"&instit_nm="+ location;
+                + "serviceKey=" + Key
+                + "&pageNo=1&numOfRows=5"
+                + "&instit_nm=" + location;
 
         try {
             URL url = new URL(queryUrl);
@@ -100,112 +128,99 @@ public class HospitalFragment extends Fragment{
             String tag;
 
             xpp.next();
-            int eventType= xpp.getEventType();
+            int eventType = xpp.getEventType();
 
-            while( eventType != XmlPullParser.END_DOCUMENT ){
+            while (eventType != XmlPullParser.END_DOCUMENT) {
 
-                switch (eventType){
+                switch (eventType) {
                     case XmlPullParser.START_DOCUMENT:
                         buffer.append("파싱시작...\n\n");
                         break;
 
                     case XmlPullParser.START_TAG:
-                        tag=xpp.getName();
+                        tag = xpp.getName();
 
-                        if(tag.equals("item"));
-                        else if(tag.equals("instit_kind")){
+                        if (tag.equals("item")) ;
+                        else if (tag.equals("instit_kind")) {
                             buffer.append("구분 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("medical_instit_kind")){
+                        } else if (tag.equals("medical_instit_kind")) {
                             buffer.append("병원 구분 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("exam_part")){
+                        } else if (tag.equals("exam_part")) {
                             buffer.append("분류 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("instit_nm")){
+                        } else if (tag.equals("instit_nm")) {
                             buffer.append("병원 이름 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("Monday")){
+                        } else if (tag.equals("Monday")) {
                             buffer.append("월요일 운영 시간 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("Tuesday")){
+                        } else if (tag.equals("Tuesday")) {
                             buffer.append("화요일 운영 시간 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("Wednesday")){
+                        } else if (tag.equals("Wednesday")) {
                             buffer.append("수요일 운영 시간 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("Thursday")){
+                        } else if (tag.equals("Thursday")) {
                             buffer.append("목요일 운영 시간 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("Friday")){
+                        } else if (tag.equals("Friday")) {
                             buffer.append("금요일 운영 시간 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("Saturday")){
+                        } else if (tag.equals("Saturday")) {
                             buffer.append("토요일 운영 시간 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("Sunday")){
+                        } else if (tag.equals("Sunday")) {
                             buffer.append("일요일 운영 시간 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("street_nm_addr")){
+                        } else if (tag.equals("street_nm_addr")) {
                             buffer.append("주소 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                        }
-                        else if(tag.equals("organ_loc")){
+                        } else if (tag.equals("organ_loc")) {
                             buffer.append("교통 : ");
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
                         }
                         break;
-                    case XmlPullParser.TEXT :
+                    case XmlPullParser.TEXT:
                         break;
-                    case XmlPullParser.END_TAG :
+                    case XmlPullParser.END_TAG:
                         tag = xpp.getName();
 
                         if (tag.equals("item")) buffer.append("\n");
                         break;
 
                 }
-                eventType= xpp.next();
-
+                eventType = xpp.next();
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
 
