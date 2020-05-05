@@ -39,6 +39,10 @@
             <item android:id="@+id/nav_food"
                 android:icon="@drawable/ic_food"
                 android:title="모범음식점"/>
+
+            <item android:id="@+id/nav_find_food"
+                android:icon="@drawable/ic_find_food"
+                android:title="모범음식점 검색하기"/>
         </menu>
 
     </item>
